@@ -5,15 +5,17 @@ import "fmt"
 type Breaker struct {
 	service       string
 	errThreshould int64
+	errCount      int64
 }
 
 func New(service string, errThreshould int64) *Breaker {
-	return &Breaker{service, errThreshould}
+	return &Breaker{service: service, errThreshould: errThreshould}
 }
 
 func (b *Breaker) Wrap(work func() RateLimitServiceResponse) {
-	if b.State() == "closed" {
+	if !b.Opened() {
 		fmt.Println("CLOSED:", b.service)
+		return
 	}
 
 	fmt.Println("Calling service:", b.service)
@@ -21,16 +23,24 @@ func (b *Breaker) Wrap(work func() RateLimitServiceResponse) {
 	workResult := work()
 
 	if workResult.RateLimit() {
-		b.errThreshould++
+		b.errCount++
 
 		fmt.Println("Service error:", b.service, b.errThreshould)
 	}
 }
 
 func (b *Breaker) State() string {
-	if b.errThreshould > 1 {
+	if b.errThreshould >= b.errCount {
 		return "closed"
 	}
 
 	return "opened"
+}
+
+func (b *Breaker) Opened() bool {
+	return b.State() == "opened"
+}
+
+func (b *Breaker) Service() string {
+	return b.service
 }
