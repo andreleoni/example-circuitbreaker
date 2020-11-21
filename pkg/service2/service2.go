@@ -1,16 +1,16 @@
-package oneservice
+package service2
 
 import "example/pkg/circuitbreaker"
 
-type OneService struct {
+type Service2 struct {
 	breaker circuitbreaker.BreakerIface
 }
 
-func New(breaker circuitbreaker.BreakerIface) *OneService {
-	return &OneService{breaker}
+func New(breaker circuitbreaker.BreakerIface) *Service2 {
+	return &Service2{breaker}
 }
 
-func (os *OneService) DoSomething() circuitbreaker.RateLimitServiceResponse {
+func (os *Service2) DoSomething() circuitbreaker.RateLimitServiceResponse {
 	var serviceResponse circuitbreaker.RateLimitServiceResponse
 
 	action := func() circuitbreaker.RateLimitServiceResponse {

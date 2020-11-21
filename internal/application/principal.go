@@ -1,32 +1,27 @@
 package application
 
 import (
-	"example/pkg/anotherservice"
 	"example/pkg/circuitbreaker"
-	"example/pkg/oneservice"
+	"example/pkg/service1"
+	"example/pkg/service2"
 	"fmt"
 )
 
 type Application struct {
-	oneService     *oneservice.OneService
-	anotherService *anotherservice.AnotherService
+	service1 *service1.Service1
+	service2 *service2.Service2
 }
 
-func New(oneService *oneservice.OneService, anotherService *anotherservice.AnotherService) *Application {
-	return &Application{oneService, anotherService}
+func New(service1 *service1.Service1, service2 *service2.Service2) *Application {
+	return &Application{service1, service2}
 }
 
-func (app Application) Principal() {
-	fmt.Println("Testing one service....")
-	app.oneService.DoSomething()
-	app.oneService.DoSomething()
+func (app Application) Service1() circuitbreaker.RateLimitServiceResponse {
+	return app.service1.CreateOrder()
+}
 
-	fmt.Println("\n")
-	fmt.Println("Testing another service....")
-	app.anotherService.CreateOrder()
-	app.anotherService.CreateOrder()
-	app.anotherService.CreateOrder()
-	app.anotherService.CreateOrder()
+func (app Application) Service2() circuitbreaker.RateLimitServiceResponse {
+	return app.service2.DoSomething()
 }
 
 func (app Application) DoSomethingOnlyIfOpened(breaker circuitbreaker.BreakerIface) {

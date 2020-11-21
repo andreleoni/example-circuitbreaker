@@ -1,0 +1,9 @@
+version: '3.6'
+
+services:
+  redis:
+    image: redis:3.0.7-alpine
+    container_name: redis
+    mem_limit: 128mb
+    ports:
+      - "6379:6379"

@@ -6,3 +6,6 @@ type BreakerIface interface {
 	Opened() bool
 	Service() string
 }
+
+type StorageIface interface {
+}

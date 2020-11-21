@@ -2,35 +2,40 @@ package main
 
 import (
 	"example/internal/application"
-	"example/pkg/anotherservice"
+	"example/internal/infra/redisimpl"
 	"example/pkg/circuitbreaker"
-	"example/pkg/oneservice"
-	"fmt"
+	"example/pkg/service1"
+	"example/pkg/service2"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	onebreaker := circuitbreaker.New("one", 1)
-	os := oneservice.New(onebreaker)
+	service1breaker := circuitbreaker.New(redisimpl.NewRedisImpl(), "service1", 1)
+	s1 := service1.New(service1breaker)
 
-	anotherbreaker := circuitbreaker.New("another", 2)
-	as := anotherservice.New(anotherbreaker)
+	service2breaker := circuitbreaker.New(redisimpl.NewRedisImpl(), "service2", 2)
+	s2 := service2.New(service2breaker)
 
-	app := application.New(os, as)
+	app := application.New(s1, s2)
 
-	app.DoSomethingOnlyIfOpened(onebreaker)
-	app.DoSomethingOnlyIfOpened(anotherbreaker)
+	r := gin.Default()
 
-	fmt.Println("\n")
+	r.GET("/dosomething/service1", func(c *gin.Context) {
+		c.JSON(200, app.Service1())
+	})
 
-	app.Principal()
+	r.GET("/dosomething/service2", func(c *gin.Context) {
+		c.JSON(200, app.Service2())
+	})
 
-	app.DoSomethingOnlyIfOpened(onebreaker)
-	app.DoSomethingOnlyIfOpened(anotherbreaker)
+	r.GET("/state/service1", func(c *gin.Context) {
+		c.JSON(200, service1breaker.State())
+	})
 
-	fmt.Println("\n")
+	r.GET("/state/service2", func(c *gin.Context) {
+		c.JSON(200, service2breaker.State())
+	})
 
-	fmt.Println("current service status \\/")
-
-	fmt.Println("one:", onebreaker.State())
-	fmt.Println("another:", anotherbreaker.State())
+	r.Run()
 }

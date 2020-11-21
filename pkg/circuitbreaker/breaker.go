@@ -3,13 +3,14 @@ package circuitbreaker
 import "fmt"
 
 type Breaker struct {
+	storage       StorageIface
 	service       string
 	errThreshould int64
 	errCount      int64
 }
 
-func New(service string, errThreshould int64) *Breaker {
-	return &Breaker{service: service, errThreshould: errThreshould}
+func New(storage StorageIface, service string, errThreshould int64) *Breaker {
+	return &Breaker{storage: storage, service: service, errThreshould: errThreshould}
 }
 
 func (b *Breaker) Wrap(work func() RateLimitServiceResponse) {
