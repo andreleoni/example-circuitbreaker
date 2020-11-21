@@ -1,7 +1,5 @@
 package circuitbreaker
 
-import "time"
-
 type BreakerIface interface {
 	Wrap(work func() RateLimitServiceResponse)
 	Opened() bool
@@ -10,15 +8,13 @@ type BreakerIface interface {
 }
 
 type StorageIface interface {
-	OpenCircuitList() []int
+	AddToList(list_key, value string) error
 
-	ClearOpenCircuitList()
+	GetList(list_key string, size int64) ([]string, error)
 
-	AddSuccess()
+	EraseList(list_key string) error
 
-	AddError()
+	Put(key string, value interface{}) error
 
-	SetLastErrorOcurredAt()
-
-	LastErrorOcurredAt() time.Time
+	Get(key string) string
 }

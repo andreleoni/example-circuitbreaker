@@ -5,14 +5,6 @@ import (
 	"time"
 )
 
-type states int
-
-const (
-	opened     states = iota
-	closed     states = iota
-	semiopened states = iota
-)
-
 type Breaker struct {
 	storage                      StorageIface
 	service                      string
@@ -33,9 +25,9 @@ func New(
 }
 
 func (b *Breaker) Wrap(work func() RateLimitServiceResponse) {
-	currentBucket := bucket{b.storage}
+	currentBucket := bucket{breaker: *b}
 
-	if !bucket.Opened() || !bucket.SemiOpened() {
+	if !currentBucket.Opened() || !currentBucket.SemiOpened() {
 		fmt.Println("CLOSED:", b.service)
 		return
 	}
@@ -45,16 +37,16 @@ func (b *Breaker) Wrap(work func() RateLimitServiceResponse) {
 	workResult := work()
 
 	if workResult.RateLimit() {
-		bucket.AddError()
-		bucket.SetLastErrorOcurredAt()
-	} else if b.SemiOpened() {
-		bucket.AddSuccess()
+		currentBucket.AddError()
+		currentBucket.SetLastErrorOcurredAt()
+	} else if currentBucket.SemiOpened() {
+		currentBucket.AddSuccess()
 
-		if bucket.ConsecutiveSuccess() > b.consecutiveSuccessThreshould {
-			bucket.ClearOpenCircuitList()
+		if currentBucket.ConsecutiveSuccess() > b.consecutiveSuccessThreshould {
+			currentBucket.ClearOpenCircuitList()
 		}
 	} else {
-		bucket.AddSuccess()
+		currentBucket.AddSuccess()
 	}
 }
 
@@ -63,23 +55,13 @@ func (b *Breaker) Service() string {
 }
 
 func (b *Breaker) Opened() bool {
-	return b.state() == opened
+	currentBucket := bucket{breaker: *b}
+
+	return currentBucket.Opened()
 }
 
 func (b *Breaker) SemiOpened() bool {
-	return b.state() == semiopened
-}
+	currentBucket := bucket{breaker: *b}
 
-func (b *Breaker) state() states {
-	if b.volumeThreshould > len(b.storage.OpenCircuitList()) {
-		if b.storage.ErrPercentage() < b.errThreshould {
-			if b.storage.LastErrorOcurredAt().Add(b.sleepWindow).Before(time.Now()) {
-				return semiopened
-			}
-
-			return closed
-		}
-	}
-
-	return opened
+	return currentBucket.SemiOpened()
 }
