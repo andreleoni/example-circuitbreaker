@@ -33,8 +33,8 @@ func (b *bucket) ConsecutiveSuccess() int {
 func (b *bucket) ErrPercentage() int {
 	list := b.getList()
 
-	successCount := 0
-	errCount := 0
+	var successCount float64
+	var errCount float64
 
 	for _, item := range *list {
 		if item == "0" {
@@ -44,7 +44,9 @@ func (b *bucket) ErrPercentage() int {
 		successCount++
 	}
 
-	return errCount / successCount
+	result := (errCount / successCount) * 100
+
+	return int(result)
 }
 
 func (b *bucket) OpenCircuitList() []string {
