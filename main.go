@@ -8,6 +8,7 @@ import (
 	"example/pkg/service2"
 	"time"
 
+	"github.com/andreleoni/testpkggolang"
 	"github.com/gin-gonic/gin"
 )
 
@@ -29,6 +30,8 @@ func main() {
 	r.GET("/service2", func(c *gin.Context) {
 		c.JSON(200, app.Service2())
 	})
+
+	testpkggolang.Start()
 
 	r.Run()
 }
