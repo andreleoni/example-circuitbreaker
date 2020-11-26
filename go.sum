@@ -1,5 +1,7 @@
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
+github.com/andreleoni/externalcontract v0.0.0-20201126232034-02c5a15b0f34 h1:tzcktXCDwoYlPpkaNHboe3TmgewBBtfhwkE1nEVpBuY=
+github.com/andreleoni/externalcontract v0.0.0-20201126232034-02c5a15b0f34/go.mod h1:jPypnRjg8kYN2dNtoOYMXbd6Sk0iA8R/UwayxNfIIxM=
 github.com/andreleoni/testpkggolang v0.0.0-20201125003337-d36f7b7af724 h1:vncmPfqUqU/SI2fjEnA/6F1mKAE9+m8IptINsw2btRE=
 github.com/andreleoni/testpkggolang v0.0.0-20201125003337-d36f7b7af724/go.mod h1:xVahXucu4bohh0FksAa+WNhsUm/dr0wO8Klw9cMKjNw=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
