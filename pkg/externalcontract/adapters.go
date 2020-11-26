@@ -1,4 +1,4 @@
-package adaptercontracts
+package externalcontract
 
 import (
 	"context"
@@ -10,7 +10,7 @@ import (
 type ExternalContract interface {
 	GetServiceName(ctx context.Context) GetServiceNameOutput
 
-	GetExternalServiceTrackingCode(ctx context.Context, identifier GetExternalServiceTrackingCodeInput) GetExternalServiceTrackingCodeOnput
+	GetExternalServiceTrackingCode(ctx context.Context, identifier GetExternalServiceTrackingCodeInput) GetExternalServiceTrackingCodeOutput
 
 	AvailableService(ctx context.Context, availableServiceInput AvailableServiceInput) AvailableServiceOutput
 
@@ -31,7 +31,7 @@ type GetExternalServiceTrackingCodeInput struct {
 	identifier Identifier
 }
 
-type GetExternalServiceTrackingCodeOnput struct {
+type GetExternalServiceTrackingCodeOutput struct {
 	TrackingCode string
 }
 

@@ -1,6 +1,7 @@
 package application
 
 import (
+	"context"
 	"example/pkg/circuitbreaker"
 	"example/pkg/service1"
 	"example/pkg/service2"
@@ -17,7 +18,7 @@ func New(service1 *service1.Service1, service2 *service2.Service2) *Application 
 }
 
 func (app Application) Service1() circuitbreaker.RateLimitServiceResponse {
-	return app.service1.CreateOrder()
+	return app.service1.GetServiceName(context.Background())
 }
 
 func (app Application) Service2() circuitbreaker.RateLimitServiceResponse {
