@@ -3,26 +3,25 @@ package application
 import (
 	"context"
 	"example/pkg/circuitbreaker"
-	"example/pkg/service1"
-	"example/pkg/service2"
+	contracts "example/pkg/externalcontract"
 	"fmt"
 )
 
 type Application struct {
-	service1 *service1.Service1
-	service2 *service2.Service2
+	service1 contracts.ExternalContract
+	service2 contracts.ExternalContract
 }
 
-func New(service1 *service1.Service1, service2 *service2.Service2) *Application {
+func New(service1 contracts.ExternalContract, service2 contracts.ExternalContract) *Application {
 	return &Application{service1, service2}
 }
 
-func (app Application) Service1() circuitbreaker.RateLimitServiceResponse {
-	return app.service1.GetServiceName(context.Background())
+func (app Application) Service1() string {
+	return app.service1.GetServiceName(context.Background()).Name
 }
 
-func (app Application) Service2() circuitbreaker.RateLimitServiceResponse {
-	return app.service2.DoSomething()
+func (app Application) Service2() string {
+	return app.service2.GetServiceName(context.Background()).Name
 }
 
 func (app Application) DoSomethingOnlyIfOpened(breaker circuitbreaker.BreakerIface) {
